@@ -2,11 +2,13 @@ package com.example.cai.ftp.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.cai.ftp.R;
+import com.example.cai.ftp.adapter.FtpFileAdapter;
 import com.example.cai.ftp.dialog.FtpSettingDialog;
 
 import butterknife.BindView;
@@ -16,6 +18,10 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.path_recycler)
+    RecyclerView pathRecycler;
+    @BindView(R.id.file_recycler)
+    RecyclerView fileRecycler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,8 +29,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+        setupContent();
 
+    }
 
+    private void setupContent() {
+        FtpFileAdapter ftpFileAdapter = new FtpFileAdapter();
+        fileRecycler.setAdapter(ftpFileAdapter);
     }
 
     @Override
@@ -39,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             new FtpSettingDialog(this).show();
             return true;
-        }else if(id == R.id.action_refresh){
+        } else if (id == R.id.action_refresh) {
             return true;
         }
 

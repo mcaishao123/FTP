@@ -88,6 +88,16 @@
             android:textSize="@dimen/text_size_16" />
     </android.support.design.widget.TextInputLayout>
 
+    <CheckBox
+        android:id="@+id/anonymous_chk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dialog_padding"
+        android:layout_marginEnd="@dimen/dialog_padding"
+        android:text="@string/anonymous"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/password_layout" />
+
     <View
         android:id="@+id/line_horizontal_view"
         android:layout_width="0dp"
@@ -97,7 +107,7 @@
         android:textSize="@dimen/text_size_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/password_layout" />
+        app:layout_constraintTop_toBottomOf="@id/anonymous_chk" />
 
     <Button
         android:id="@+id/cancel_btn"
