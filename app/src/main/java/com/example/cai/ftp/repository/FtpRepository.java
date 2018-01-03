@@ -10,7 +10,7 @@ import it.sauronsoftware.ftp4j.FTPIllegalReplyException;
 
 public class FtpRepository {
 
-    private FTPClient getInstance() {
+    public static FTPClient getInstance() {
         FTPClient instance = new FTPClient();
         try {
             FtpServer ftpServer = FtpServer.getCurrentFtpServer();

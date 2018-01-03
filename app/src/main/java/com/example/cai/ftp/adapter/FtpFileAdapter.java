@@ -9,15 +9,13 @@ import android.widget.TextView;
 
 import com.example.cai.ftp.R;
 
-import java.util.List;
-
 import it.sauronsoftware.ftp4j.FTPFile;
 
 public class FtpFileAdapter extends RecyclerView.Adapter<FtpFileAdapter.ViewHolder> {
     private LayoutInflater layoutInflater;
-    private List<FTPFile> ftpFiles;
+    private FTPFile[] ftpFiles;
 
-    public FtpFileAdapter(Context context, List<FTPFile> ftpFiles) {
+    public FtpFileAdapter(Context context, FTPFile[] ftpFiles) {
         this.layoutInflater = LayoutInflater.from(context);
         this.ftpFiles = ftpFiles;
     }
@@ -34,7 +32,7 @@ public class FtpFileAdapter extends RecyclerView.Adapter<FtpFileAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-        return ftpFiles == null ? 0 : ftpFiles.size();
+        return ftpFiles == null ? 0 : ftpFiles.length;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

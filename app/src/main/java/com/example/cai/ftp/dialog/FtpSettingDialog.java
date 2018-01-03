@@ -32,8 +32,11 @@ public class FtpSettingDialog extends AlertDialog {
     @BindView(R.id.confirm_btn)
     Button confirmBtn;
 
-    public FtpSettingDialog(Context context) {
+    private ClickListener clickListener;
+
+    public FtpSettingDialog(Context context, ClickListener clickListener) {
         super(context);
+        this.clickListener = clickListener;
     }
 
     @Override
@@ -59,8 +62,15 @@ public class FtpSettingDialog extends AlertDialog {
                 dismiss();
                 break;
             case R.id.confirm_btn:
+                if (clickListener != null) {
+                    clickListener.onClickConfirm();
+                }
                 dismiss();
                 break;
         }
+    }
+
+    public interface ClickListener {
+        void onClickConfirm();
     }
 }
