@@ -27,7 +27,7 @@ public class FtpFileAdapter extends RecyclerView.Adapter<FtpFileAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(FtpFileAdapter.ViewHolder holder, int position) {
-
+        holder.bindView(ftpFiles[position].getName());
     }
 
     @Override
