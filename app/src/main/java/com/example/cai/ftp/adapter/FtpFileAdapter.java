@@ -2,6 +2,7 @@ package com.example.cai.ftp.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,8 @@ import android.widget.TextView;
 
 import com.example.cai.ftp.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import it.sauronsoftware.ftp4j.FTPFile;
 
 public class FtpFileAdapter extends RecyclerView.Adapter<FtpFileAdapter.ViewHolder> {
@@ -20,13 +23,17 @@ public class FtpFileAdapter extends RecyclerView.Adapter<FtpFileAdapter.ViewHold
         this.ftpFiles = ftpFiles;
     }
 
-    @Override
-    public FtpFileAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(layoutInflater.inflate(R.layout.activity_main, parent));
+    public void setFtpFiles(FTPFile[] ftpFiles) {
+        this.ftpFiles = ftpFiles;
     }
 
     @Override
-    public void onBindViewHolder(FtpFileAdapter.ViewHolder holder, int position) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new ViewHolder(layoutInflater.inflate(R.layout.item_file, parent,false));
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
         holder.bindView(ftpFiles[position].getName());
     }
 
@@ -36,15 +43,17 @@ public class FtpFileAdapter extends RecyclerView.Adapter<FtpFileAdapter.ViewHold
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        final TextView textView;
+        @BindView(R.id.img)
+        TextView img;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            textView = (TextView) itemView;
+            ButterKnife.bind(this,itemView);
         }
 
         void bindView(String name) {
-            this.textView.setText(name);
+            Log.e("ViewHolder", "bindView: fileName="+name);
+            this.img.setText(name);
         }
     }
 }

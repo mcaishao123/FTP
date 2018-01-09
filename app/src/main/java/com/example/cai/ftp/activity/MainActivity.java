@@ -4,18 +4,17 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.cai.ftp.R;
 import com.example.cai.ftp.adapter.FtpFileAdapter;
 import com.example.cai.ftp.dialog.FtpSettingDialog;
+import com.example.cai.ftp.listener.ConnectHandler;
 import com.example.cai.ftp.repository.FtpRepository;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import it.sauronsoftware.ftp4j.FTPClient;
 import it.sauronsoftware.ftp4j.FTPFile;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,10 +22,9 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.path_recycler)
-    RecyclerView pathRecycler;
+    RecyclerView pathRecyclerView;
     @BindView(R.id.file_recycler)
     RecyclerView fileRecyclerView;
-    private FTPFile[] ftpFiles;
     private FtpFileAdapter ftpFileAdapter;
 
     @Override
@@ -40,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupContent() {
-        ftpFileAdapter = new FtpFileAdapter(this,ftpFiles );
+        ftpFileAdapter = new FtpFileAdapter(this, null);
         fileRecyclerView.setAdapter(ftpFileAdapter);
     }
 
@@ -70,24 +68,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadData() {
-        try {
-            FTPClient ftpClient = FtpRepository.getInstance();
-            if(ftpClient != null){
-                Log.e("MainActivity", "loadData: "+ftpClient.isConnected());
+        FtpRepository.getInstance(new ConnectHandler() {
+            @Override
+            public void onSuccessful(FTPFile[] ftpFiles) {
+                if (ftpFileAdapter != null) {
+                        ftpFileAdapter.setFtpFiles(ftpFiles);
+                        ftpFileAdapter.notifyDataSetChanged();
+                }
             }
-            ftpFiles = FtpRepository.getInstance().list();
-            if(ftpFiles !=null){
-                Log.e("MainActivity", "loadData: "+ftpFiles.length);
 
-            }else{
-                Log.e("MainActivity", "loadData: ftpFiles==null");
+            @Override
+            public void onFailure(Exception e) {
+
             }
-            if (ftpFileAdapter != null) {
-                ftpFileAdapter.notifyDataSetChanged();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        });
     }
 
 }
