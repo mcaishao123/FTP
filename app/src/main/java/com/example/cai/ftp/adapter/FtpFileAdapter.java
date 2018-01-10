@@ -6,7 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import com.example.cai.ftp.R;
 
@@ -17,6 +17,7 @@ import it.sauronsoftware.ftp4j.FTPFile;
 public class FtpFileAdapter extends RecyclerView.Adapter<FtpFileAdapter.ViewHolder> {
     private LayoutInflater layoutInflater;
     private FTPFile[] ftpFiles;
+    private String dir;
 
     public FtpFileAdapter(Context context, FTPFile[] ftpFiles) {
         this.layoutInflater = LayoutInflater.from(context);
@@ -27,6 +28,10 @@ public class FtpFileAdapter extends RecyclerView.Adapter<FtpFileAdapter.ViewHold
         this.ftpFiles = ftpFiles;
     }
 
+    public void setDir(String dir) {
+        this.dir = dir;
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(layoutInflater.inflate(R.layout.item_file, parent,false));
@@ -34,7 +39,7 @@ public class FtpFileAdapter extends RecyclerView.Adapter<FtpFileAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.bindView(ftpFiles[position].getName());
+        holder.bindView(ftpFiles[position]);
     }
 
     @Override
@@ -44,16 +49,25 @@ public class FtpFileAdapter extends RecyclerView.Adapter<FtpFileAdapter.ViewHold
 
     class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.img)
-        TextView img;
+        ImageView img;
+        private FTPFile ftpFile;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
         }
 
-        void bindView(String name) {
-            Log.e("ViewHolder", "bindView: fileName="+name);
-            this.img.setText(name);
+        void bindView(FTPFile ftpFile) {
+            this.ftpFile = ftpFile;
+            Log.e("ViewHolder", "bindView: ");
+            if(ftpFile.getType() == FTPFile.TYPE_DIRECTORY){
+                this.img.setImageResource(R.drawable.ic_folder_white_24dp);
+                this.img.setVisibility(View.VISIBLE);
+
+            }else{
+                this.img.setVisibility(View.GONE);
+
+            }
         }
     }
 }

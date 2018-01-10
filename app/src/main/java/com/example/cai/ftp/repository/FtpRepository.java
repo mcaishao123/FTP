@@ -7,17 +7,17 @@ import com.example.cai.ftp.listener.ConnectHandler;
 import com.example.cai.ftp.model.FtpServer;
 
 import it.sauronsoftware.ftp4j.FTPClient;
-import it.sauronsoftware.ftp4j.FTPFile;
 
 public class FtpRepository {
 
     @SuppressLint("StaticFieldLeak")
     public static void getInstance(final ConnectHandler connectHandler) {
-        new AsyncTask<Void, Void, FTPFile[]>() {
+        final FTPClient ftpClient = new FTPClient();
+
+        new AsyncTask<Void, Void, FTPClient>() {
 
             @Override
-            protected FTPFile[] doInBackground(Void... voids) {
-                final FTPClient instance = new FTPClient();
+            protected FTPClient doInBackground(Void... voids) {
                 try {
 //            FtpServer ftpServer = FtpServer.getCurrentFtpServer();
                     FtpServer ftpServer = new FtpServer();
@@ -26,11 +26,11 @@ public class FtpRepository {
                     ftpServer.setUsername("c");
                     ftpServer.setPassword("c");
                     if (ftpServer != null) {
-                        instance.connect(ftpServer.getHost(), ftpServer.getPort());
-                        instance.login(ftpServer.isAnonymous() ? "anonymous" : ftpServer.getUsername(), ftpServer.getPassword());
+                        ftpClient.connect(ftpServer.getHost(), ftpServer.getPort());
+                        ftpClient.login(ftpServer.isAnonymous() ? "anonymous" : ftpServer.getUsername(), ftpServer.getPassword());
                     }
-                    if (instance.isConnected()) {
-                        return instance.list();
+                    if (ftpClient.isConnected()) {
+                        return ftpClient;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -40,13 +40,22 @@ public class FtpRepository {
             }
 
             @Override
-            protected void onPostExecute(FTPFile[] ftpFiles) {
-                if (ftpFiles != null) {
-                    connectHandler.onSuccessful(ftpFiles);
+            protected void onPostExecute(FTPClient ftpClient) {
+
+                if (ftpClient != null) {
+
+                    try {
+                        connectHandler.onSuccessful(ftpClient.list());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        connectHandler.onFailure(e);
+
+                    }
                 } else {
                     connectHandler.onFailure(new Exception("Unable to connect"));
                 }
             }
         }.execute();
+
     }
 }

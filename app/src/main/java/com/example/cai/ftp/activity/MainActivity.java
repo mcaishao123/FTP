@@ -1,11 +1,13 @@
 package com.example.cai.ftp.activity;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.cai.ftp.R;
 import com.example.cai.ftp.adapter.FtpFileAdapter;
@@ -68,18 +70,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadData() {
-        FtpRepository.getInstance(new ConnectHandler() {
+        final ProgressDialog progressDialog = ProgressDialog.show(this, null, getString(R.string.please_wait), false, false);
+         FtpRepository.getInstance(new ConnectHandler() {
             @Override
             public void onSuccessful(FTPFile[] ftpFiles) {
                 if (ftpFileAdapter != null) {
-                        ftpFileAdapter.setFtpFiles(ftpFiles);
-                        ftpFileAdapter.notifyDataSetChanged();
+                    ftpFileAdapter.setFtpFiles(ftpFiles);
+                    ftpFileAdapter.notifyDataSetChanged();
                 }
+                progressDialog.dismiss();
             }
 
             @Override
             public void onFailure(Exception e) {
-
+                progressDialog.dismiss();
+                Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
