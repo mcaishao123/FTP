@@ -13,11 +13,12 @@ import com.example.cai.ftp.R;
 import com.example.cai.ftp.adapter.FtpFileAdapter;
 import com.example.cai.ftp.dialog.FtpSettingDialog;
 import com.example.cai.ftp.listener.ConnectHandler;
+import com.example.cai.ftp.listener.FtpInfoHandler;
+import com.example.cai.ftp.model.FtpInfo;
 import com.example.cai.ftp.repository.FtpRepository;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import it.sauronsoftware.ftp4j.FTPFile;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -71,20 +72,26 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadData() {
         final ProgressDialog progressDialog = ProgressDialog.show(this, null, getString(R.string.please_wait), false, false);
-         FtpRepository.getInstance(new ConnectHandler() {
+        FtpRepository.connect(FtpRepository.getFTPClient(), new ConnectHandler() {
             @Override
-            public void onSuccessful(FTPFile[] ftpFiles) {
-                if (ftpFileAdapter != null) {
-                    ftpFileAdapter.setFtpFiles(ftpFiles);
-                    ftpFileAdapter.notifyDataSetChanged();
-                }
-                progressDialog.dismiss();
+            public void onSuccessful() {
+                FtpRepository.getFtpInfo(new FtpInfoHandler() {
+                    @Override
+                    public void getFtpInfo(FtpInfo ftpInfo) {
+                        if (ftpFileAdapter != null && ftpInfo != null) {
+                            ftpFileAdapter.setFtpInfo(ftpInfo);
+                            ftpFileAdapter.notifyDataSetChanged();
+                        }
+                        progressDialog.dismiss();
+                    }
+                });
             }
 
             @Override
-            public void onFailure(Exception e) {
+            public void onFailure() {
                 progressDialog.dismiss();
-                Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "connect fail", Toast.LENGTH_LONG).show();
+
             }
         });
     }
